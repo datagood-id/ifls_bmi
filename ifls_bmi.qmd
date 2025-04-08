@@ -79,7 +79,7 @@ ifls_2 <- ifls |>
          .keep = "unused")
 
 ifls_2 <- ifls_2 |> 
-  mutate(age = factor(age, c("<40"," >40")),
+  mutate(age = factor(age, c("<40",">40")),
          sex = factor(sex, c("male","female")),
          marital = factor(marital, c("not married","married")),
          urban = factor(urban, c("rural","urban")),
@@ -101,6 +101,7 @@ ifls_2 |>
   rename_with(str_to_title) |> 
   rename(`BMI` = Bmi) |> 
   mutate(across(where(is.factor), str_to_title)) |> 
+  mutate(Age = factor(Age, labels = c("<40","(more than) 40"))) |> 
   datasummary_balance(formula =~ 1)
 ```
 

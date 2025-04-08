@@ -37,116 +37,23 @@ Sample consists of 29934 respondents after being cleaned. The outcome is
 toothache experience. The sociodemographic characteristics are: age,
 sex, marital, urban, education, job.
 
-<table style="width:64%;">
-<colgroup>
-<col style="width: 16%" />
-<col style="width: 19%" />
-<col style="width: 11%" />
-<col style="width: 16%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th></th>
-<th>Mean</th>
-<th>Std. Dev.</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>BMI</td>
-<td></td>
-<td>23.3</td>
-<td>4.5</td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>N</td>
-<td>Pct.</td>
-</tr>
-<tr class="odd">
-<td>Age</td>
-<td>&lt;40</td>
-<td>19441</td>
-<td>64.9</td>
-</tr>
-<tr class="even">
-<td></td>
-<td><blockquote>
-<p>40</p>
-</blockquote></td>
-<td>10493</td>
-<td>35.1</td>
-</tr>
-<tr class="odd">
-<td>Sex</td>
-<td>Female</td>
-<td>15723</td>
-<td>52.5</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Male</td>
-<td>14211</td>
-<td>47.5</td>
-</tr>
-<tr class="odd">
-<td>Marital</td>
-<td>Married</td>
-<td>21824</td>
-<td>72.9</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Not Married</td>
-<td>8110</td>
-<td>27.1</td>
-</tr>
-<tr class="odd">
-<td>Urban</td>
-<td>Rural</td>
-<td>11987</td>
-<td>40.0</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>Urban</td>
-<td>17947</td>
-<td>60.0</td>
-</tr>
-<tr class="odd">
-<td>Education</td>
-<td>Elementary</td>
-<td>9256</td>
-<td>30.9</td>
-</tr>
-<tr class="even">
-<td></td>
-<td>High_school</td>
-<td>16381</td>
-<td>54.7</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>University</td>
-<td>4297</td>
-<td>14.4</td>
-</tr>
-<tr class="even">
-<td>Job</td>
-<td>Employed</td>
-<td>2669</td>
-<td>8.9</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td>Unemployed</td>
-<td>27265</td>
-<td>91.1</td>
-</tr>
-</tbody>
-</table>
+|           |                | Mean  | Std. Dev. |
+|-----------|----------------|-------|-----------|
+| BMI       |                | 23.3  | 4.5       |
+|           |                | N     | Pct.      |
+| Age       | \<40           | 19441 | 64.9      |
+|           | (more than) 40 | 10493 | 35.1      |
+| Sex       | Female         | 15723 | 52.5      |
+|           | Male           | 14211 | 47.5      |
+| Marital   | Married        | 21824 | 72.9      |
+|           | Not Married    | 8110  | 27.1      |
+| Urban     | Rural          | 11987 | 40.0      |
+|           | Urban          | 17947 | 60.0      |
+| Education | Elementary     | 9256  | 30.9      |
+|           | High_school    | 16381 | 54.7      |
+|           | University     | 4297  | 14.4      |
+| Job       | Employed       | 2669  | 8.9       |
+|           | Unemployed     | 27265 | 91.1      |
 
 ![](ifls_bmi_files/figure-commonmark/unnamed-chunk-7-1.png)
 
@@ -286,20 +193,20 @@ Model is fitted by maximum likelihood estimation (MLE).
 </tr>
 &#10;</table>
 
-<div id="skohjgjwye" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#skohjgjwye table {
+<div id="riksdzzoys" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#riksdzzoys table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-&#10;#skohjgjwye thead, #skohjgjwye tbody, #skohjgjwye tfoot, #skohjgjwye tr, #skohjgjwye td, #skohjgjwye th {
+&#10;#riksdzzoys thead, #riksdzzoys tbody, #riksdzzoys tfoot, #riksdzzoys tr, #riksdzzoys td, #riksdzzoys th {
   border-style: none;
 }
-&#10;#skohjgjwye p {
+&#10;#riksdzzoys p {
   margin: 0;
   padding: 0;
 }
-&#10;#skohjgjwye .gt_table {
+&#10;#riksdzzoys .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -324,11 +231,11 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_caption {
+&#10;#riksdzzoys .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-&#10;#skohjgjwye .gt_title {
+&#10;#riksdzzoys .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -339,7 +246,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
-&#10;#skohjgjwye .gt_subtitle {
+&#10;#riksdzzoys .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -350,7 +257,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
-&#10;#skohjgjwye .gt_heading {
+&#10;#riksdzzoys .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -361,12 +268,12 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_bottom_border {
+&#10;#riksdzzoys .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_col_headings {
+&#10;#riksdzzoys .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -380,7 +287,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-right-width: 1px;
   border-right-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_col_heading {
+&#10;#riksdzzoys .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -399,7 +306,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-right: 5px;
   overflow-x: hidden;
 }
-&#10;#skohjgjwye .gt_column_spanner_outer {
+&#10;#riksdzzoys .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -410,13 +317,13 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-left: 4px;
   padding-right: 4px;
 }
-&#10;#skohjgjwye .gt_column_spanner_outer:first-child {
+&#10;#riksdzzoys .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
-&#10;#skohjgjwye .gt_column_spanner_outer:last-child {
+&#10;#riksdzzoys .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
-&#10;#skohjgjwye .gt_column_spanner {
+&#10;#riksdzzoys .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -427,10 +334,10 @@ Model is fitted by maximum likelihood estimation (MLE).
   display: inline-block;
   width: 100%;
 }
-&#10;#skohjgjwye .gt_spanner_row {
+&#10;#riksdzzoys .gt_spanner_row {
   border-bottom-style: hidden;
 }
-&#10;#skohjgjwye .gt_group_heading {
+&#10;#riksdzzoys .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -455,7 +362,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   vertical-align: middle;
   text-align: left;
 }
-&#10;#skohjgjwye .gt_empty_group_heading {
+&#10;#riksdzzoys .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -469,13 +376,13 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-bottom-color: #D3D3D3;
   vertical-align: middle;
 }
-&#10;#skohjgjwye .gt_from_md > :first-child {
+&#10;#riksdzzoys .gt_from_md > :first-child {
   margin-top: 0;
 }
-&#10;#skohjgjwye .gt_from_md > :last-child {
+&#10;#riksdzzoys .gt_from_md > :last-child {
   margin-bottom: 0;
 }
-&#10;#skohjgjwye .gt_row {
+&#10;#riksdzzoys .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -493,7 +400,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   vertical-align: middle;
   overflow-x: hidden;
 }
-&#10;#skohjgjwye .gt_stub {
+&#10;#riksdzzoys .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -505,7 +412,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#skohjgjwye .gt_stub_row_group {
+&#10;#riksdzzoys .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -518,13 +425,13 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-right: 5px;
   vertical-align: top;
 }
-&#10;#skohjgjwye .gt_row_group_first td {
+&#10;#riksdzzoys .gt_row_group_first td {
   border-top-width: 2px;
 }
-&#10;#skohjgjwye .gt_row_group_first th {
+&#10;#riksdzzoys .gt_row_group_first th {
   border-top-width: 2px;
 }
-&#10;#skohjgjwye .gt_summary_row {
+&#10;#riksdzzoys .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -533,14 +440,14 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#skohjgjwye .gt_first_summary_row {
+&#10;#riksdzzoys .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_first_summary_row.thick {
+&#10;#riksdzzoys .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
-&#10;#skohjgjwye .gt_last_summary_row {
+&#10;#riksdzzoys .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -549,7 +456,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_grand_summary_row {
+&#10;#riksdzzoys .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -558,7 +465,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#skohjgjwye .gt_first_grand_summary_row {
+&#10;#riksdzzoys .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -567,7 +474,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-top-width: 6px;
   border-top-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_last_grand_summary_row_top {
+&#10;#riksdzzoys .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -576,10 +483,10 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-bottom-width: 6px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_striped {
+&#10;#riksdzzoys .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
-&#10;#skohjgjwye .gt_table_body {
+&#10;#riksdzzoys .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -587,7 +494,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_footnotes {
+&#10;#riksdzzoys .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -600,7 +507,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_footnote {
+&#10;#riksdzzoys .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -608,7 +515,7 @@ Model is fitted by maximum likelihood estimation (MLE).
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#skohjgjwye .gt_sourcenotes {
+&#10;#riksdzzoys .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -621,64 +528,64 @@ Model is fitted by maximum likelihood estimation (MLE).
   border-right-width: 2px;
   border-right-color: #D3D3D3;
 }
-&#10;#skohjgjwye .gt_sourcenote {
+&#10;#riksdzzoys .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
-&#10;#skohjgjwye .gt_left {
+&#10;#riksdzzoys .gt_left {
   text-align: left;
 }
-&#10;#skohjgjwye .gt_center {
+&#10;#riksdzzoys .gt_center {
   text-align: center;
 }
-&#10;#skohjgjwye .gt_right {
+&#10;#riksdzzoys .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-&#10;#skohjgjwye .gt_font_normal {
+&#10;#riksdzzoys .gt_font_normal {
   font-weight: normal;
 }
-&#10;#skohjgjwye .gt_font_bold {
+&#10;#riksdzzoys .gt_font_bold {
   font-weight: bold;
 }
-&#10;#skohjgjwye .gt_font_italic {
+&#10;#riksdzzoys .gt_font_italic {
   font-style: italic;
 }
-&#10;#skohjgjwye .gt_super {
+&#10;#riksdzzoys .gt_super {
   font-size: 65%;
 }
-&#10;#skohjgjwye .gt_footnote_marks {
+&#10;#riksdzzoys .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
-&#10;#skohjgjwye .gt_asterisk {
+&#10;#riksdzzoys .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
-&#10;#skohjgjwye .gt_indent_1 {
+&#10;#riksdzzoys .gt_indent_1 {
   text-indent: 5px;
 }
-&#10;#skohjgjwye .gt_indent_2 {
+&#10;#riksdzzoys .gt_indent_2 {
   text-indent: 10px;
 }
-&#10;#skohjgjwye .gt_indent_3 {
+&#10;#riksdzzoys .gt_indent_3 {
   text-indent: 15px;
 }
-&#10;#skohjgjwye .gt_indent_4 {
+&#10;#riksdzzoys .gt_indent_4 {
   text-indent: 20px;
 }
-&#10;#skohjgjwye .gt_indent_5 {
+&#10;#riksdzzoys .gt_indent_5 {
   text-indent: 25px;
 }
-&#10;#skohjgjwye .katex-display {
+&#10;#riksdzzoys .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
-&#10;#skohjgjwye div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+&#10;#riksdzzoys div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
