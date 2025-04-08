@@ -1,0 +1,383 @@
+---
+title: "IFLS BMI MAIHDA"
+format: 
+  html:
+    warning: false
+    echo: false
+---
+
+Intersectionality is the study of how multiple sociodemographic identities intersect and interact to create unique experiences of discrimination and privilege that result in inequalities in individual outcomes. Intersectionality makes visible the experiences of hidden marginalized populations.
+
+From quantitative data analysis perspective, a natural approach to study intersectional sociodemographic inequalities in individual outcomes is to estimate linear regressions of the individual outcome of interest on their sociodemographic characteristics and their interactions. As we introduce further sociodemographic characteristics, it proves statistically and interpretationally challenging to also introduce more and more interactions, many imprecisely estimated parameters and risk of type I errors. As a result, interactions effects and therefore intersectionality in individual outcomes is typically under explored, running the risk of misunderstanding or even missing important marginalized populations.
+
+Intersectional multilevel analysis of individual heterogeneity and discriminatory accuracy (MAIHDA) aims to address these challenges, a systematic approach to explore many and complex interaction effects. Intersectional MAIHDA involves an innovative application of two-level linear regression of individual outcomes where individuals are modeled as clustered in 10s or even 100s of strata defined by the combinations of their sociodemographics characteristics, interest lies in studying how mean outcomes vary across strata. The approach was proposed by Evans et al. (2018) and has been further developed by Evans, Merlo, Leckie, and others.
+
+```{r}
+library(tidyverse)
+library(haven)
+library(brms)
+library(sjPlot)
+library(gt)
+library(ggdist)
+library(tidybayes)
+library(ggh4x)
+library(viridis)
+library(ggpmisc)
+library(e1071)
+library(modelsummary)
+```
+
+```{r}
+theme_set(theme_minimal())
+theme_update(panel.grid.minor = element_blank(),
+             panel.grid.major.x = element_blank(),
+             plot.title.position = "plot")
+```
+
+```{r}
+load("input/ifls_bmi.rda")
+```
+
+```{r, eval=F}
+cov <- read_dta("E:/Dropbox/Afr/Dropbox/Datasets/IFLS/IFLS 5/Data Household/b3a_cov.dta")
+dl  <- read_dta("E:/Dropbox/Afr/Dropbox/Datasets/IFLS/IFLS 5/Data Household/b3a_dl1.dta")
+sc  <- read_dta("E:/Dropbox/Afr/Dropbox/Datasets/IFLS/IFLS 5/Data Household/bk_sc1.dta")
+tk1 <- read_dta("E:/Dropbox/Afr/Dropbox/Datasets/IFLS/IFLS 5/Data Household/b3a_tk1.dta")
+us  <- read_dta("E:/Dropbox/Afr/Dropbox/Datasets/IFLS/IFLS 5/Data Household/bus_us.dta")
+```
+
+```{r, eval=F}
+ifls <- list(cov |> 
+               select(pidlink, hhid14, age, sex, marstat),
+             sc |> 
+               select(hhid14, sc05),
+             dl |> 
+               select(pidlink, hhid14, dl06),
+             tk1 |> 
+               select(pidlink, hhid14, tk16d),
+             us |> 
+               select(pidlink, hhid14, us04, us06)) |> 
+  reduce(inner_join)
+
+ifls_2 <- ifls |> 
+  mutate(age = case_when(age <= 40 ~ "<40",
+                         age > 40 ~ ">40"),
+         sex = case_match(sex, 1~"male", 3~"female"),
+         marital = case_when(marstat %in% c(1,3,4,5,6) ~ "not married",
+                             marstat %in% c(2) ~ "married"),
+         urban = case_when(sc05 %in% c(2) ~ "rural",
+                           sc05 %in% c(1) ~ "urban"),
+         education = case_when(dl06 %in% c(2,11,17,72) ~ "elementary",
+                               dl06 %in% c(3,4,12,73,5,6,15,74) ~ "high_school",
+                               dl06 %in% c(13,60,61,62,63) ~ "university"),
+         job = case_match(tk16d, 1~"employed", 3~"unemployed"),
+         bmi = us06 / (us04/100)^2,
+         bmi_cat = case_when(bmi <= 18.5 ~ 1,
+                             bmi <= 25 ~ 2,
+                             bmi <= 30 ~ 3,
+                             bmi > 30 ~ 4),
+         .keep = "unused")
+
+ifls_2 <- ifls_2 |> 
+  mutate(age = factor(age, c("<40",">40")),
+         sex = factor(sex, c("male","female")),
+         marital = factor(marital, c("not married","married")),
+         urban = factor(urban, c("rural","urban")),
+         job = factor(job, c("unemployed","employed")),
+         education = factor(education, c("elementary","high_school","university"))) |> 
+  mutate(strata = paste(age, sex, marital, urban, education, job, sep = "_"))
+
+ifls_2 <- ifls_2 |> 
+  filter(if_all(c(age, sex, marital, urban, education, job), ~ !is.na(.)))
+```
+
+## Data
+
+Data were drawn from wave 5 of Indonesia family life survey (IFLS). Sample consists of 29934 respondents after being cleaned. The outcome is toothache experience. The sociodemographic characteristics are: age, sex, marital, urban, education, job.
+
+```{r}
+ifls_2 |> 
+  select(age:job, bmi) |> 
+  rename_with(str_to_title) |> 
+  rename(`BMI` = Bmi) |> 
+  mutate(across(where(is.factor), str_to_title)) |> 
+  datasummary_balance(formula =~ 1)
+```
+
+```{r}
+ifls_2 |> 
+  ggplot(aes(bmi)) +
+  geom_histogram(fill = viridis(1, begin = 0.2)) +
+  labs(x = "BMI",
+       y = "Frequency",
+       title = "BMI distribution") +
+  scale_y_continuous(limits = c(0,6000)) +
+  annotate("table", x = 50, y = 5500,  
+           hjust = 0, vjust = 0.9, size = 3,
+           label = list(ifls_2 |> 
+                          filter(!is.na(bmi)) |> 
+                          summarise(Mean = mean(bmi),
+                                    Min = min(bmi),
+                                    `25th` = quantile(bmi, 0.25),
+                                    `50th` = quantile(bmi, 0.5),
+                                    `75th` = quantile(bmi, 0.75),
+                                    Max = max(bmi)) |> 
+                          pivot_longer(everything()) |> 
+                          mutate(value = round(value, 2)) |> 
+                          rename(Stat = name, `BMI` = value)))
+```
+
+```{r}
+ifls_2 |> 
+  select(age:job) |> 
+  pivot_longer(age:job) |> 
+  summarise(n = n(),
+            .by = c(name, value)) |> 
+  mutate(value = str_to_sentence(value),
+         value = case_match(value, .default = value,
+                            "High_school" ~ "HS",
+                            "University" ~ "Uni"),
+         name = str_to_sentence(name)) |> 
+  mutate(p = n / sum(n) * 100,
+         lab = paste0(n, "\n(", round(p), "%)"),
+         .by = name) |> 
+  ggplot(aes(x = value,
+             y = n)) +
+  facet_wrap(~ name, scales = "free_x", strip.position = "bottom") +
+  geom_col(width = 0.6, fill = viridis(1, begin = 0.2)) +
+  geom_text(aes(label = lab),
+            size = 2.5, vjust = -0.4) +
+  scale_y_continuous(limits = c(0,31000), expand = expansion(c(0.01, 0.1))) +
+  labs(x = element_blank(),
+       y = "Frequency",
+       title = "Demographic distribution") +
+  theme(strip.placement = "outside")
+```
+
+```{r}
+ifls_2 |> 
+  select(age:bmi) |> 
+  pivot_longer(age:job) |> 
+  summarise(across(bmi, ~ mean(., na.rm = T)),
+            .by = c(name, value)) |> 
+  mutate(value = str_to_sentence(value),
+         value = case_match(value, .default = value,
+                            "High_school" ~ "HS",
+                            "University" ~ "Uni"),
+         name = str_to_sentence(name)) |> 
+  ggplot(aes(x = value,
+             y = bmi)) +
+  facet_wrap(~ name, scales = "free_x", strip.position = "bottom") +
+  geom_col(width = 0.6, fill = viridis(1, begin = 0.2)) +
+  geom_text(aes(label = round(bmi, 2)),
+            size = 2.5, vjust = -1) +
+  scale_y_continuous(limits = c(0,30), expand = expansion(c(0.01, 0.1))) +
+  labs(x = element_blank(),
+       y = "BMI",
+       title = "BMI means by demographic") +
+  theme(strip.placement = "outside")
+```
+
+## Strata
+
+The strata is defined by combination of age, sex, marital, urban, education and job, resulting in 94 theoretical strata. The individual BMI experience are now viewed as clustered in strata, the variables defining the strata are elevated from individual to stratum level characteristics. Intersectional strata identities and even the characteristics defining them are no longer modeled as personal characteristics (risking "blaming the victim"), but are now modeled as social contexts viewed as encompassing the broader shared social experiences of individuals in each strata.
+
+```{r}
+ifls_2_id <- ifls_2 |> 
+  summarise(bmi = mean(bmi, na.rm = T),
+            n = n(),
+            .by = c(age, sex, marital, urban, education, job)) |> 
+  arrange(bmi) |> 
+  mutate(id = 1:n())
+```
+
+```{r}
+ifls_2_id |> 
+  ggplot(aes(n)) +
+  geom_histogram(fill = viridis(1, begin = 0.2)) +
+  labs(x = "Strata size",
+       y = "Frequency",
+       title = "Strata size distribution") +
+  annotate("table", x = 2000, y = 30,  
+           hjust = 0, vjust = 0.9, size = 3,
+           label = list(ifls_2_id |> 
+                          summarise(Mean = mean(n),
+                                    Min = min(n),
+                                    `25th` = quantile(n, 0.25),
+                                    `50th` = quantile(n, 0.5),
+                                    `75th` = quantile(n, 0.75),
+                                    Max = max(n)) |> 
+                          pivot_longer(everything()) |> 
+                          mutate(value = round(value)) |> 
+                          rename(Stat = name, `Strata size` = value)))
+```
+
+```{r}
+ifls_2_id |> 
+  ggplot(aes(x = id,
+             y = bmi)) +
+  geom_point(col = viridis(1, begin = 0.2)) +
+  geom_hline(yintercept = ifls_2_id |> pull(bmi) |> mean(),
+             linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 100, y = ifls_2_id |> pull(bmi) |> mean(),
+           vjust = 1.2, hjust = 0.7, size = 3, 
+           label = paste("Mean =", ifls_2_id |> pull(bmi) |> mean() |> round(2))) +
+  scale_x_continuous(limits = c(0,100)) +
+  labs(x = "Strata rank",
+       y = "BMI",
+       title = "BMI means by strata")
+```
+
+```{r}
+ifls_2_id |> 
+  ggplot(aes(x = n,
+             y = bmi)) +
+  geom_point(alpha = 0.5, shape = 16, col = viridis(1, begin = 0)) +
+  geom_hline(yintercept = ifls_2_id |> pull(bmi) |> mean(),
+             linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 3000, y = ifls_2_id |> pull(bmi) |> mean(),
+           vjust = 1.2, hjust = 0.7, size = 3, 
+           label = paste("Mean =", ifls_2_id |> pull(bmi) |> mean() |> round(2))) +
+  scale_x_continuous(expand = expansion(c(0.01,0.05)), limits = c(0,3000)) +
+  labs(x = "Strata size",
+       y = "BMI",
+       title = "BMI means by strata size")
+```
+
+## Model fit
+
+Model null measures the extent to which individual outcome heterogeneity is explained by sociodemographic intersections vs other factors. Optimally predicts the mean outcome for each stratum. 
+
+Model full decomposes sociodemographic mean outcomes into additive and non-additive effects and measures relative importance of interactions. Optimally predicts the strata interaction effects with built in control for type I errors of inference.
+
+Model is fitted by maximum likelihood estimation (MLE).
+
+```{r, eval=F}
+m0 <- brm(bmi ~ 1 + (1|strata), 
+          data = ifls_2,
+          warmup = 5000, iter = 10000,
+          chain = 1, seed = 1)
+```
+
+```{r, eval=F}
+m1 <- brm(bmi ~ 1 + age + sex + marital + urban + education + job + (1|strata), 
+          data = ifls_2,
+          warmup = 5000, iter = 10000,
+          chain = 1, seed = 1)
+```
+
+```{r}
+tab_model(m0, m1,
+          dv.labels = rep("Mental health", 2),
+          pred.labels = c("Intercept",
+                          "Age: >40",
+                          "Female","Married","Urban",
+                          "Education: High school","Education: University",
+                          "Job: Employed"))
+```
+
+```{r}
+fit_sum <- list(m1) |> 
+  map(\(x) list(summary(x)["spec_pars"], 
+                summary(x)["random"][[1]]) |> 
+        map(\(x) x[[1]][1,1]) |> 
+        unlist()) |> 
+  map(\(x) as_tibble_row(x, .name_repair = "unique")) |> 
+  bind_rows() |> 
+  rename_with(~ c("sigma","sd"))
+
+fit_sum <- fit_sum |> 
+  mutate(across(c(sigma,sd), \(x) x^2)) |> 
+  mutate(sigma_m0 = summary(m0)["spec_pars"][[1]][1,1]^2,
+         sd_m0 = summary(m0)["random"][[1]][[1]][1,1]^2) |> 
+  mutate(vpc = sd_m0 / (sd_m0 + sigma_m0) * 100,
+         vpc_adj = sd / (sd + sigma) * 100,
+         pcv = (sd_m0 - sd) / sd_m0 * 100)
+
+fit_sum |> 
+  select(vpc:pcv) |> 
+  pivot_longer(everything(),
+               names_to = "Measure",
+               values_to = "Value") |> 
+  mutate(Measure = case_match(Measure,
+                              "vpc" ~ "VPC",
+                              "vpc_adj" ~ "VPC adj",
+                              "pcv" ~ "PCV"),
+         Value = paste0(round(Value, 2), "%")) |> 
+  gt()
+```
+
+Variance partition coefficient (VPC) measures the proportion of individual heterogeneity which lies between strata. The variance in individual BMI is 13.62% between strata means, and the rest 86.38% is attributable to unmodeled factors that vary across individuals. There is less variation between strata means, than within strata. Therefore, the strata has very low discriminatory accuracy. The strata tells us very little about individual toothache.
+
+The VPC adjusted is just 3.04% which is too little for interaction effects to explain the variation.
+
+Percentage change in variance (PCV) measures the degree to which we explain the overall sociodemographic variation by just the main effects. The variation of sociodemographic main effects is 80.15%, and thus only 19.85% of the variation explained by sociodemographic interaction effects. 
+
+```{r, eval=F}
+pred <- m0 |> 
+  add_fitted_draws(newdata = ifls_2, allow_new_levels = T) |> 
+  group_by(age, sex, marital, urban, education, job) |> 
+  mean_qi(.value)
+
+pred_m0 <- pred |> 
+  filter(if_all(everything(), ~ !is.na(.)))
+```
+
+```{r}
+pred_m0 |> 
+  arrange(.value) |> 
+  mutate(id = 1:n()) |> 
+  ggplot(aes(x = id,
+             y = .value)) +
+  geom_point(col = viridis(1, begin = 0.2)) +
+  geom_linerange(aes(ymin = .lower, ymax = .upper),
+                 alpha = 0.5) +
+  geom_hline(yintercept = pred_m0 |> pull(.value) |> mean(),
+             linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 100, y = pred_m0 |> pull(.value) |> mean(),
+           vjust = 1.2, hjust = 0.7, size = 3, 
+           label = paste("Mean =", pred_m0 |> pull(.value) |> mean() |> round(2))) +
+  scale_x_continuous(limits = c(0,100)) +
+  labs(x = "Strata rank",
+       y = "BMI",
+       title = "Predicted BMI strata means: Model 0")
+```
+
+```{r, eval=F}
+pred <- m1 |> 
+  add_fitted_draws(newdata = ifls_2, allow_new_levels = T) |> 
+  group_by(age, sex, marital, urban, education, job) |> 
+  mean_qi(.value)
+
+pred_m1 <- pred |> 
+  filter(if_all(everything(), ~ !is.na(.)))
+```
+
+```{r}
+pred_m1 |> 
+  arrange(.value) |> 
+  mutate(id = 1:n()) |> 
+  ggplot(aes(x = id,
+             y = .value)) +
+  geom_point(col = viridis(1, begin = 0.2)) +
+  geom_linerange(aes(ymin = .lower, ymax = .upper),
+                 alpha = 0.5) +
+  geom_hline(yintercept = pred_m1 |> pull(.value) |> mean(),
+             linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 100, y = pred_m1 |> pull(.value) |> mean(),
+           vjust = 1.2, hjust = 0.7, size = 3, 
+           label = paste("Mean =", pred_m1 |> pull(.value) |> mean() |> round(2))) +
+  scale_x_continuous(limits = c(0,100)) +
+  labs(x = "Strata rank",
+       y = "BMI",
+       title = "Predicted BMI strata means: Model 1")
+```
+
+The caterpillar plot gives a sense of not just the variablity in predicted strata means, but their individual imprecision, and their lack of statistical separation.
+
+```{r, eval=F}
+save(ifls_2, 
+     m0, m1, 
+     pred_m0, pred_m1,
+     file = "input/ifls_bmi.rda")
+```
